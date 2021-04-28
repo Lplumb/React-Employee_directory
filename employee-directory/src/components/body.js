@@ -1,75 +1,75 @@
-import React, { useState } from "react";
-import "../styles/body.css"
-import RadioForm from "./radioForm";
-import ResultContainer from "./results.js"
-import ResultContext from "../utils/ResultContext"
-import db from "../db.json";
+import React, { useState, Component } from "react";
+import API from "../utils/API.js"
+import Search from "../components/searchbox.js"
 
-const styles = {
-    bigPad:{
-      minHeight: 80 
-    },
-    littlePad: {
-        minHeight: 26
-    },
-    centerText:{
-        textAlign: "center"
-    },
-    test: {
-        backgroundColor: "red",
-        height: 400
-    }
-  }
  
-    function Body(){
-        const [resultListState, setResultList] = useState({
-            db: db,
-            sort: sortList,
-            filter: filterList
+
+class Body extends Component {
+    state = {
+        employees: [],
+        filterEmployees: [],
+    }
+    componentDidMount () {
+        API.getEmployees().then(employee => {
+            this.setState({
+                employees: employee.data.results,
+                filterEmployees: employee.data.results,
+            })
         })
+    }
 
-        function sortList() {
-            const sortedArray = resultListState.db.sort((a,b) => (a.Salary < b.Salary) ? 1: -1)
-            console.log("Directory sorted by descending salary: " + JSON.stringify(sortedArray))
-            return setResultList({...resultListState, db: sortedArray})
-        }
+    handleSearch = e => {
+        var searchVal = e.target.value
 
-        function filterList(){
-            var filteredArray = resultListState.db.filter(function(employee) {
-             return employee.position.toLowerCase().includes("manager") ;
-            });
-            console.log("Directory filtered to contain only management: " + JSON.stringify(filteredArray))
-            return setResultList({...resultListState, db: filteredArray})
-        }
+        var filterstate = this.state.employees.filter(data => {
+            var checkValues = Object.values(data).join("").toLowerCase()
+            return checkValues.indexOf(searchVal.toLowerCase()) !== -1
+        })
+        this.setState({
+            filterEmployees: filterstate
+        })
+    }
 
-    return (
-        <ResultContext.Provider value={resultListState}>
-            <div className="col-sm-12">
-            </div>
-            <div className="row">
-                <div className="col-sm-2">
-                </div>
-                <div className="col-sm-8 body-container">
-                    <div className="row">
-                        <div className="col-sm-12" style={styles.bigPad}>
 
-                        </div>
-                        <div className="col-sm-1">
+    render(){
+        return (
+            <div>
+                <Search handleSearch = {this.handleSearch}/>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Number</th>
+                <th>Email</th>
+                <th>Age</th>
+                {this.state.filterEmployees.map( (data) => {
+                    console.log(data)
+                    return(
+                        <tr key = {data.login.uuid}>
+                            <td className = "align-middle">
+                                <img src = {data.picture.thumbnail} alt = "profile image"/>
+                            </td>
+                            <td className = "align-middle">
+                                {data.name.first} {data.name.last}
+                            </td>
+                            <td className = "align-middle">
+                                {data.cell}
+                            </td>
+                            <td className = "align-middle">
+                                <a href = {"mailto: " + data.email}>
+                                    {data.email}
+                                </a>
+                            </td>
+                            <td className = "align-middle">
+                                {data.dob.age}
+                            </td>
+                        </tr>
+                        )
+                })} 
+            </div>   
+        )
+    }
 
-                        </div>
-                        <RadioForm
-                        />
-                        <div className="col-sm-1">
 
-                        </div>
-                        <div className="col-sm-6 employee-card">
-                            <ResultContainer/>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </ResultContext.Provider>
-    )
+
 }
 
 export default Body
