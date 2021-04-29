@@ -62,8 +62,9 @@ class Body extends Component {
         return (
             <div>
                 <Search handleSearch = {this.handleSearch}/>
+                <button type="button" className="align-middle btn btn-dark" onClick={this.handleSort} >A-Z Sort</button>
                 <th>Image</th>
-                <th onClick={this.handleSort} className="hover">Name</th>
+                <th className="hover">Name</th>
                 <th>Number</th>
                 <th>Email</th>
                 <th>Age</th>
