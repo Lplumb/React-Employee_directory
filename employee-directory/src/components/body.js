@@ -32,28 +32,33 @@ class Body extends Component {
     }
 
     handleSort = e => {
+        let sortableItems = [...this.state.employees];
+        console.log(this.state.sortOrder);
         if(this.state.sortOrder === "desc"){
-            this.setState({sortOrder: "asc"})
+            this.setState({sortOrder: "asc"}, () => {
+                sortableItems.sort(this.nestedSort("name", "first"));
+                console.log(sortableItems);
+                this.setState({
+                    filterEmployees: sortableItems
+                })
+            })
         } else {
-            this.setState({sortOrder: "desc"})
+            this.setState({sortOrder: "desc"}, () => {
+                sortableItems.sort(this.nestedSort("name", "first", "desc"));
+                console.log(sortableItems);
+                this.setState({
+                    filterEmployees: sortableItems
+                })
+            })
         }
-        const sortedEmployees = this.state.employees.sort((a, b) => {
-            if (this.state.sortOrder === "asc"){
-                if (a.name.first > b.name.first)
-                return -1;
-            } else {
-                if (a.name.first < b.name.first)
-                return 1;                
-            }
-            // if (a.name.first > b.name.first)
-            //     return -1;
-            // if (a.name.first < b.name.first)
-            //     return 1;
-            return 0;
-        });
-        this.setState({employees: sortedEmployees})
     }
 
+    nestedSort = (prop1, prop2 = null, direction = 'asc') => (e1, e2) => {
+        const a = prop2 ? e1[prop1][prop2] : e1[prop1],
+            b = prop2 ? e2[prop1][prop2] : e2[prop1],
+            sortOrder = direction === "asc" ? 1 : -1
+        return (a < b) ? -sortOrder : (a > b) ? sortOrder : 0;
+    }
 
     render(){
         return (
