@@ -1,8 +1,6 @@
 import React, { useState, Component } from "react";
 import API from "../utils/API.js"
-import Search from "../components/searchbox.js"
-
- 
+import Search from "../components/searchbox.js" 
 
 class Body extends Component {
     state = {
@@ -65,7 +63,7 @@ class Body extends Component {
             <div>
                 <Search handleSearch = {this.handleSearch}/>
                 <th>Image</th>
-                <th onClick={this.handleSort}>Name</th>
+                <th onClick={this.handleSort} className="hover">Name</th>
                 <th>Number</th>
                 <th>Email</th>
                 <th>Age</th>
@@ -73,21 +71,21 @@ class Body extends Component {
                     console.log(data)
                     return(
                         <tr key = {data.login.uuid}>
-                            <td className = "align-middle">
+                            <td className="align-middle">
                                 <img src = {data.picture.thumbnail} alt = "profile image"/>
                             </td>
-                            <td className = "align-middle">
+                            <td className="align-middle">
                                 {data.name.first} {data.name.last}
                             </td>
-                            <td className = "align-middle">
+                            <td className="align-middle">
                                 {data.cell}
                             </td>
-                            <td className = "align-middle">
+                            <td className="align-middle">
                                 <a href = {"mailto: " + data.email}>
                                     {data.email}
                                 </a>
                             </td>
-                            <td className = "align-middle">
+                            <td className="align-middle">
                                 {data.dob.age}
                             </td>
                         </tr>
